@@ -1,0 +1,8 @@
+python 3
+tqdm
+numpy
+scipy
+matplotlib
+Pillow
+tensorflow >= 1.10.0
+keras >= 2.0.0
