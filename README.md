@@ -63,6 +63,3 @@ Here are some python scripts for running our experiments
 
 #### 4. notebooks
 Here are some Jupyter notebooks for experiments
-
-#### 5. documents
-Here is our project proposal, project write-up etc.
