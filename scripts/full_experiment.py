@@ -10,7 +10,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from disparity import cnn, mrf, util, data
+from disparity import cnn, crf, util, data
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -130,7 +130,7 @@ def main():
         # perform CRF smoothing
         print('Performing CRF smoothing...')
         # perform smoothing
-        smoother = mrf.GradientDescent(
+        smoother = crf.GradientDescent(
             height, width, numDisparities, session=sess, alpha=2., beta=0.2
         )
         disparity_CRF = smoother.decode_MAP(energies, lr=0.01, iterations=100)

@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from disparity import data, cnn, mrf, util
+from disparity import data, cnn, crf, util
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -95,7 +95,7 @@ def main():
         init_disp_spearman = util.score_disparity(disparity_CNN, disp_R, mode='spearman')
 
         # initialize MRF
-        smoother = mrf.LoopyBP(height, width, num_beliefs)
+        smoother = crf.LoopyBP(height, width, num_beliefs)
         disparity_MRF = smoother.decode_MAP(energies, iterations=bp_num_iters)
 
         fname = os.path.join(ARGS.results_dir, 'disp%0.3i_CRF' % samp_ix)
