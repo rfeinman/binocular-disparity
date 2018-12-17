@@ -9,8 +9,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from disparity.wrangle_data import load_middlebury_dataset
-from disparity import cnn, mrf, util
+from disparity import cnn, mrf, util, data
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -63,7 +62,7 @@ def main():
         os.mkdir(ARGS.save_dir)
         results_file = os.path.join(ARGS.save_dir, 'results.csv')
     print('Loading image data...')
-    samples = load_middlebury_dataset(
+    samples = data.load_middlebury_dataset(
         ARGS.data_dir, nb_samples=ARGS.nb_samples, max_size=400
     )
     # results placeholders

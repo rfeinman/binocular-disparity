@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from disparity import wrangle_data, cnn, mrf, util
+from disparity import data, cnn, mrf, util
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -56,7 +56,7 @@ def main():
     os.mkdir(ARGS.results_dir)
 
     # load the middlebury data
-    samples = wrangle_data.load_middlebury_dataset(
+    samples = data.load_middlebury_dataset(
         ARGS.data_dir, nb_samples=ARGS.nb_samples, max_size=400
     )
 
