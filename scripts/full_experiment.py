@@ -24,7 +24,9 @@ ARGS = parser.parse_args()
 def write(results):
     fname = os.path.join(ARGS.results_dir, "results.csv")
     with open(fname, mode='a') as f:
-        scores_writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+        scores_writer = csv.writer(
+            f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL
+        )
         scores_writer.writerow(results)
 
 def check_overwrite():
