@@ -1,12 +1,12 @@
 from __future__ import division, print_function
 from PIL import Image
 import numpy as np
-from keras.models import Model
-from keras.applications.vgg16 import VGG16, preprocess_input
+from keras import models
+from keras.applications import vgg16
 
 from .util import parallel, shift, normalize_features
 
-vgg = None
+vgg_feats = None
 
 def disparity_energy(d_val):
     feats_Ls = shift(feats_L, d_val, 'left')
@@ -72,13 +72,13 @@ def cnn_features(imgs, normalize=False):
     assert len(imgs.shape) == 4
     assert imgs.dtype == np.uint8
     assert imgs.max() > 1
-    global vgg
-    if vgg is None:
-        vgg = get_vgg()
+    global vgg_feats
+    if vgg_feats is None:
+        vgg_feats = get_vgg()
     # pre-process images for vgg
-    imgs = preprocess_input(imgs)
+    imgs = vgg16.preprocess_input(imgs)
     # compute vgg features
-    feats = vgg.predict(imgs)
+    feats = vgg_feats.predict(imgs)
     # normalize if needed
     if normalize:
         feats = normalize_features(feats)
@@ -86,9 +86,9 @@ def cnn_features(imgs, normalize=False):
     return feats
 
 def get_vgg(layer='block2_conv2'):
-    model = VGG16(weights='imagenet', include_top=False)
+    model = vgg16.VGG16(weights='imagenet', include_top=False)
     assert layer in [l.name for l in model.layers]
-    model_feats = Model(
+    model_feats = models.Model(
         inputs=model.input,
         outputs=model.get_layer(layer).output
     )
