@@ -1,3 +1,6 @@
+"""
+Demo the standard pixel-based block matching algorithm with openCV
+"""
 from __future__ import division, print_function
 import argparse
 import cv2
@@ -25,10 +28,10 @@ def main():
 
     # visualize
     fig, axes = plt.subplots(1,2,figsize=(14,5))
-    axes[0].imshow(image_right, cmap='gray')
+    axes[0].imshow(image_right[:,ARGS.num_disparities:], cmap='gray')
     axes[0].axis('off')
     axes[0].set_title('original image')
-    axes[1].imshow(disparity)
+    axes[1].imshow(disparity[:,ARGS.num_disparities:])
     axes[1].axis('off')
     axes[1].set_title('disparity map')
     plt.show()
