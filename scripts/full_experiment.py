@@ -10,7 +10,7 @@ import tensorflow as tf
 import keras.backend as K
 
 from disparity.wrangle_data import load_middlebury_dataset
-from disparity import CNN, MRF, util
+from disparity import cnn, mrf, util
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -91,7 +91,7 @@ def main():
 
         print('Computing disparities...')
         # compute disparity energies
-        energies = CNN.compute_energies(
+        energies = cnn.compute_energies(
             img_L, img_R, numDisparities=120, shift_mode=ARGS.shift_mode
         )
         # select disparity threshold
@@ -111,10 +111,10 @@ def main():
         # perform CRF smoothing
         print('Performing CRF smoothing...')
         # perform smoothing
-        mrf = MRF.GradientDescent(
+        smoother = mrf.GradientDescent(
             height, width, numDisparities, session=sess, alpha=2., beta=0.2
         )
-        disparity_CRF = mrf.decode_MAP(energies, lr=0.01, iterations=100)
+        disparity_CRF = smoother.decode_MAP(energies, lr=0.01, iterations=100)
         # compute new scores
         spearman = util.score_disparity(disparity_CRF, disp_R, mode='spearman')
         pearson = util.score_disparity(disparity_CRF, disp_R, mode='pearson')

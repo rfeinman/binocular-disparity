@@ -11,7 +11,7 @@ import numpy as np
 import tensorflow as tf
 import keras.backend as K
 
-from disparity import wrangle_data, CNN, MRF, util
+from disparity import wrangle_data, cnn, mrf, util
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
@@ -75,7 +75,7 @@ def main():
 
         # compute disparity energies
         print('Computing disparity energies...')
-        energies = CNN.compute_energies(
+        energies = cnn.compute_energies(
             img_L, img_R, numDisparities=numDisparities
         )
 
@@ -95,8 +95,8 @@ def main():
         init_disp_spearman = util.score_disparity(disparity_CNN, disp_R, mode='spearman')
 
         # initialize MRF
-        mrf = MRF.LoopyBP(height, width, num_beliefs)
-        disparity_MRF = mrf.decode_MAP(energies, iterations=bp_num_iters)
+        smoother = mrf.LoopyBP(height, width, num_beliefs)
+        disparity_MRF = smoother.decode_MAP(energies, iterations=bp_num_iters)
 
         fname = os.path.join(ARGS.results_dir, 'disp%0.3i_CRF' % samp_ix)
         save_disparity(fname, disparity_MRF)

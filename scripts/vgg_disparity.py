@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
 
-from disparity import CNN
+from disparity import cnn
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--num_disparities', default=16, type=int)
@@ -17,7 +17,7 @@ def main():
     image_right = np.array(Image.open('../data/test/tsukuba_R.png'))
 
     # compute binocular disparity using CNN
-    disparity = CNN.compute_disparity(
+    disparity = cnn.compute_disparity(
         image_left, image_right, numDisparities=ARGS.num_disparities,
         shift_mode='before'
     )
