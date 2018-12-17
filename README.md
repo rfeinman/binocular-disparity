@@ -19,7 +19,7 @@ The following code loads the BPL model with pre-defined hyperparameters
 and samples a token
 
 ```python
-from disparity import cnn, mrf, util
+from disparity import cnn, crf, util
 
 # Create a function to load your left and right image.
 image_left, image_right = load_images()
@@ -34,7 +34,7 @@ threshold = util.select_disparity_threshold(energies)
 energies = energies[:,:,:threshold]
 
 # Initialize MRF loopy belief propagation model
-smoother = mrf.LoopyBP(height, width, num_beliefs=threshold)
+smoother = crf.LoopyBP(height, width, num_beliefs=threshold)
 
 # Perform MAP inference with loopy BP (max-product message passing)
 disparity = smoother.decode_MAP(energies, iterations=20)
