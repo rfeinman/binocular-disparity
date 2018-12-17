@@ -34,10 +34,10 @@ threshold = util.select_disparity_threshold(energies)
 energies = energies[:,:,:threshold]
 
 # Initialize MRF loopy belief propagation model
-mrf = mrf.LoopyBP(height, width, num_beliefs=threshold)
+smoother = mrf.LoopyBP(height, width, num_beliefs=threshold)
 
 # Perform MAP inference with loopy BP (max-product message passing)
-disparity = mrf.decode_MAP(energies, iterations=20)
+disparity = smoother.decode_MAP(energies, iterations=20)
 ```
 
 ## Benchmark dataset
