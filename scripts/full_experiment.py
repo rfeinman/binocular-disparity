@@ -1,6 +1,7 @@
 from __future__ import division, print_function
 import argparse
 import warnings
+import sys
 import os
 import cv2
 import shutil
@@ -13,10 +14,10 @@ from disparity import cnn, mrf, util, data
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--data_dir', default='../data/middlebury', type=str)
-parser.add_argument('--save_dir', default=None, type=str)
+parser.add_argument('--results_dir', default=None, type=str)
 parser.add_argument('--nb_samples', default=None, type=int)
 parser.add_argument('--shift_mode', default='before', type=str)
-parser.add_argument('--gpu_id', default='', type=str)
+parser.add_argument('--gpu_id', default='0', type=str)
 ARGS = parser.parse_args()
 
 
@@ -47,24 +48,43 @@ def save_results(
     df['pearson_CRFs'] = pearson_CRFs
     df.to_csv(fname, index=False)
 
+def check_overwrite():
+    val = input("Results directory '%s' already exists. Would you like to "
+                "overwrite? [y/n]: " % ARGS.results_dir)
+    if val in ['y', 'n']:
+        return val
+    else:
+        print("Must enter 'y' or 'n'.")
+        return check_overwrite()
+
 def main():
-    assert ARGS.gpu_id in ['', '0', '1', '2']
-    gpu_options = tf.GPUOptions(allow_growth=True,visible_device_list=ARGS.gpu_id)
-    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-    K.set_session(sess)
+    assert ARGS.gpu_id in ['0', '1', '2']
     assert ARGS.shift_mode in ['before', 'after']
-    if ARGS.save_dir is None:
+
+    # initialize results directory
+    if ARGS.results_dir is None:
         warnings.warn("results wont be saved")
     else:
-        if os.path.isdir(ARGS.save_dir):
-            warnings.warn('overwriting existing results folder')
-            shutil.rmtree(ARGS.save_dir)
-        os.mkdir(ARGS.save_dir)
-        results_file = os.path.join(ARGS.save_dir, 'results.csv')
+        if os.path.isdir(ARGS.results_dir):
+            if check_overwrite() == 'y':
+                shutil.rmtree(ARGS.results_dir)
+                os.mkdir(ARGS.results_dir)
+            else:
+                sys.exit(0)
+        results_file = os.path.join(ARGS.results_dir, 'results.csv')
+
+    # initialize TensorFlow session
+    gpu_options = tf.GPUOptions(allow_growth=True,
+                                visible_device_list=ARGS.gpu_id)
+    sess = tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+    K.set_session(sess)
+
+    # load the middlebury dataset
     print('Loading image data...')
     samples = data.load_middlebury_dataset(
         ARGS.data_dir, nb_samples=ARGS.nb_samples, max_size=400
     )
+
     # results placeholders
     spearman_BMs = []
     spearman_CNNs = []
@@ -122,21 +142,21 @@ def main():
         print('rho_CRF: %0.3f' % spearman)
 
         # save results
-        if ARGS.save_dir is not None:
+        if ARGS.results_dir is not None:
             save_results(
                 results_file, thresh, spearman_BMs, spearman_CNNs, spearman_CRFs,
                 pearson_BMs, pearson_CNNs, pearson_CRFs
             )
             np.save(
-                os.path.join(ARGS.save_dir, 'disp%0.3i_BM.npy'%i),
+                os.path.join(ARGS.results_dir, 'disp%0.3i_BM.npy'%i),
                 disparity_BM.astype(np.int16)
             )
             np.save(
-                os.path.join(ARGS.save_dir, 'disp%0.3i_CNN.npy'%i),
+                os.path.join(ARGS.results_dir, 'disp%0.3i_CNN.npy'%i),
                 disparity_CNN.astype(np.int16)
             )
             np.save(
-                os.path.join(ARGS.save_dir, 'disp%0.3i_CRF.npy'%i),
+                os.path.join(ARGS.results_dir, 'disp%0.3i_CRF.npy'%i),
                 disparity_CRF.astype(np.int16)
             )
 
