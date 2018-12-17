@@ -1,5 +1,5 @@
 """
-Demo the standard pixel-based block matching algorithm with openCV
+Demo our CNN disparity algorithm (no CRF smoothing)
 """
 from __future__ import division, print_function
 import argparse

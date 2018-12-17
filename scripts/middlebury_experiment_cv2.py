@@ -1,3 +1,7 @@
+"""
+Run standard pixel-based block matching algorithm on all images from the
+middlebury stereo dataset. Requires OpenCV
+"""
 from __future__ import division, print_function
 import argparse
 import sys

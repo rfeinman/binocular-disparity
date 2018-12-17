@@ -1,3 +1,7 @@
+"""
+Run the full disparity algorithm (CNN + CRF) on all images from the middlebury
+stereo dataset
+"""
 from __future__ import division, print_function
 import argparse
 import sys
