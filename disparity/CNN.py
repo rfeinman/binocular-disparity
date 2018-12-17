@@ -6,7 +6,7 @@ from keras.applications.vgg16 import VGG16, preprocess_input
 
 from .util import parallel, shift, normalize_features
 
-cnn = None
+vgg = None
 
 def disparity_energy(d_val):
     feats_Ls = shift(feats_L, d_val, 'left')
@@ -68,44 +68,17 @@ def compute_energies(
 
     return energies
 
-# def compute_energies_BM(
-#         img_L, img_R, numDisparities, blockSize,
-#         normalize_feats=False, interpolate=True
-# ):
-#     """
-#     Block matching with CNN features
-#     """
-#     from . import block_matching as BM
-#     # check inputs
-#     check_imgs(img_L, img_R)
-#     global feats_R, feats_L, height, width
-#     height, width, _ = img_L.shape
-#     imgs = np.stack([img_R, img_L], axis=0)
-#     feats_R, feats_L = cnn_features(imgs, normalize_feats)
-#     energies = BM.compute_energies(feats_L, feats_R, numDisparities, blockSize)
-#     # perform bi-linear interpolation if needed
-#     if energies.shape[:2] != (height, width) and interpolate:
-#         energies = parallel(
-#             interpolate_energy,
-#             [energies[:,:,i] for i in range(numDisparities)]
-#         )
-#     # finalize energies array
-#     energies = np.asarray(energies, dtype=np.float32)
-#     energies = np.transpose(energies, axes=[1, 2, 0])
-#
-#     return energies
-
 def cnn_features(imgs, normalize=False):
     assert len(imgs.shape) == 4
     assert imgs.dtype == np.uint8
     assert imgs.max() > 1
-    global cnn
-    if cnn is None:
-        cnn = get_vgg()
+    global vgg
+    if vgg is None:
+        vgg = get_vgg()
     # pre-process images for vgg
     imgs = preprocess_input(imgs)
     # compute vgg features
-    feats = cnn.predict(imgs)
+    feats = vgg.predict(imgs)
     # normalize if needed
     if normalize:
         feats = normalize_features(feats)
