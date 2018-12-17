@@ -1,0 +1,68 @@
+# Computing Binocular Disparity with Convolutional Neural Networks and Conditional Random Fields
+
+This is a code repository for computing binocular disparity with a combination of Convolutional Neural Networks and Conditional Random Fields. The code makes use of TensorFlow backend. This project was assembled for Joan Bruna's 2018 course "Inference and Representation" at NYU.
+
+## Requirements & Setup
+
+Make sure that all requirements are installed on your machine before you run the code. A full list of requirements can be found in `requirements.txt`. To install the software, run the following command to clone the repository into a folder of your choice:
+```
+git clone https://github.com/rfeinman/binocular-disparity.git
+```
+On UNIX machines, after cloning this repository, it is recommended that you add the repository to your `PYTHONPATH` environment variable to enable imports from any folder:
+```
+export PYTHONPATH="/path/to/binocular-disparity:$PYTHONPATH"
+```
+
+## Usage Example
+
+The following code loads the BPL model with pre-defined hyperparameters 
+and samples a token
+
+```python
+from disparity import CNN, MRF, util
+
+# Create a function to load your left and right image.
+image_left, image_right = load_images()
+height, width, _ = image_left.shape
+
+# Compute disparity energies for a left-right image pair.
+# This returns an array of size (height, width, numDisparities)
+energies = CNN.compute_energies(image_left, image_right, numDisparities=120)
+
+# Select an optimal disparity threshold based on energy entropy
+threshold = util.select_disparity_threshold(energies)
+energies = energies[:,:,:threshold]
+
+# Initialize MRF loopy belief propagation model
+mrf = MRF.LoopyBP(height, width, num_beliefs=threshold)
+
+# Perform MAP inference with loopy BP (max-product message passing)
+disparity = mrf.decode_MAP(energies, iterations=20)
+```
+
+## Benchmark dataset
+
+Our experiment scripts use the Middlebury stereo dataset. To obtain the dataset,
+download the link file at the following link:
+
+<http://www.cns.nyu.edu/~reuben/files/middlebury.zip>.
+
+Then, unzip the folder and place it inside `data/`.
+
+
+## Repository Structure
+
+#### 1. data
+Here is a folder to hold all datasets for the experiments
+
+#### 2. disparity
+Here are the core source code modules of the repository
+
+#### 3. scripts
+Here are some python scripts for running our experiments
+
+#### 4. notebooks
+Here are some Jupyter notebooks for experiments
+
+#### 5. documents
+Here is our project proposal, project write-up etc.
