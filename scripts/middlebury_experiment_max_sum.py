@@ -122,8 +122,9 @@ def main():
             disparity_CRF = smoother.decode_MAP(energies,lr=0.01,iterations=100)
         elif ARGS.crf_alg == 'LBP':
             print('Performing sum prod loopy belief propagation CRF smoothing...')
-            smoother = crf.LoopyBP(height,width,thresh)
-            disparity_CRF = smoother.decode_MAP(energies,iterations=20)
+            probs = util.energies_to_probs(energies)
+            smoother = crf.SumProductLBP(height,width,thresh)
+            disparity_CRF = smoother.decode_MAP(probs,iterations=20)
         elif ARGS.crf_alg == 'LBP_MP':
             print('Performing max sum loopy belief propagation CRF smoothing...')
 

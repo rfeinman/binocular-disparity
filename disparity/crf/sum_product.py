@@ -41,15 +41,14 @@ class SumProductLBP(object):
         self.height = height
         self.num_beliefs = num_beliefs
 
-    def decode_MAP(self, observations, iterations=20):
-        assert len(observations.shape) == 3
-        # convert energies into probabilities
-        probs = util.energies_to_probs(observations)
+    def decode_MAP(self, probabilities, iterations=20):
+        # probabilities is shape (height, width, num_beliefs)
+        assert len(probabilities.shape) == 3
 
         # initialize the model
         self.init_MRF()
         self.init_smoothness()
-        self.init_base_belief(probs)
+        self.init_base_belief(probabilities)
 
         # perform loopy BP iterations
         for _ in tqdm(range(iterations)):

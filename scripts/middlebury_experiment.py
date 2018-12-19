@@ -53,10 +53,12 @@ def main():
         raise Exception("'shift_mode' must be either 'before' or 'after'")
     if ARGS.crf_alg == 'GD':
         print('Using gradient descent MAP inference for CRF')
-    elif ARGS.crf_alg == 'LBP':
-        print('Using loopy belief propagation MAP inference for CRF')
+    elif ARGS.crf_alg == 'LBP_SP':
+        print('Using sum-product LoopyBP inference for CRF')
+    elif ARGS.crf_alg == 'LBP_MP':
+        print('Using max-product LoopyBP inference for CRF')
     else:
-        raise Exception("'crf_alg' must be either 'GD' or 'LBP'")
+        raise Exception("'crf_alg' must be either 'GD', 'LBP_SP' or 'LBP_MP'")
 
     # initialize results directory
     if os.path.isdir(ARGS.results_dir):
@@ -107,10 +109,15 @@ def main():
             print('Performing gradient descent CRF smoothing...')
             smoother = crf.GradientDescent(height,width,thresh,session=sess)
             disparity_CRF = smoother.decode_MAP(energies,lr=0.01,iterations=100)
-        elif ARGS.crf_alg == 'LBP':
-            print('Performing loopy belief propagation CRF smoothing...')
-            smoother = crf.LoopyBP(height,width,thresh)
-            disparity_CRF = smoother.decode_MAP(energies,iterations=20)
+        elif ARGS.crf_alg == 'LBP_SP':
+            print('Performing sum-product LoopyBP CRF smoothing...')
+            probs = util.energies_to_probs(energies)
+            smoother = crf.SumProductLBP(height,width,thresh)
+            disparity_CRF = smoother.decode_MAP(probs, iterations=20)
+        elif ARGS.crf_alg == 'LBP_MP':
+            print('Performing max-product LoopyBP CRF smoothing...')
+            smoother = crf.MaxProductLBP(height,width,thresh)
+            disparity_CRF = smoother.decode_MAP(disparity_CNN, iterations=30)
         else:
             raise Exception
         # compute new scores
