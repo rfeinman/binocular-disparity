@@ -146,3 +146,15 @@ def select_disparity_threshold(energies, min_thresh=10, alpha=0.05):
     thresh = candidates[ix[0]]
 
     return thresh
+
+def get_neighboring_pairs(height, width):
+    x = np.array(range(height*width))
+    x = x.reshape(height, width)
+    pairs = []
+    for i in range(height):
+        pairs += zip(x[i], x[i,1:])
+    for j in range(width):
+        pairs += zip(x[:,j], x[1:,j])
+    pairs = np.asarray(pairs, dtype=np.int32)
+
+    return pairs
