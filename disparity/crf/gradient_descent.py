@@ -15,10 +15,19 @@ class GradientDescent(object):
     :param session: [tf.Session] TensorFlow session to use
     :param alpha: [float] smoothness ratio
     :param beta: [float] truncation parameter for the binary potential function
+    :param smooth_energies: [bool] whether we will be smoothing disparity
+        energies. Default is False (smooth disparity values, not energies)
     """
-    def __init__(self, height, width, num_beliefs, session, alpha=2., beta=0.2):
-        shape = (height, width, num_beliefs)
+    def __init__(
+            self, height, width, num_beliefs, session, alpha=2., beta=0.2,
+            smooth_energies=False
+    ):
         assert isinstance(session, tf.Session)
+        if smooth_energies:
+            shape = (height, width, num_beliefs)
+        else:
+            shape = (height, width)
+        self.smooth_energies = smooth_energies
         self.height = height
         self.width = width
         self.num_beliefs = num_beliefs
@@ -34,7 +43,7 @@ class GradientDescent(object):
         delta = tf.Variable(np.zeros(shape), dtype=tf.float32)
         # latent variables 'x'
         x = y + delta
-        x_flat = tf.reshape(x, (height*width, num_beliefs))
+        x_flat = tf.reshape(x, (height*width, -1))
         pairs = util.get_neighboring_pairs(height, width)
         # data-fitting potential
         fit = tf.reduce_sum(tf.square(delta))
@@ -62,16 +71,16 @@ class GradientDescent(object):
         :param observations: [(H,W) or (H,W,n) ndarray] the CRF observations
         :param lr: [float] learning rate
         :param iterations: [int] number of optimization steps
-        :return x_smooth: [(H,W) or (H,W,n) ndarray] the decoded latent variables
-        :return losses: [list of float] losses for each iteration
+        :return belief [(H,W) or (H,W,n) ndarray] the decoded latent variables
         """
         # record
         assert len(observations.shape) in [2,3]
         assert observations.shape[:2] == (self.height, self.width)
 
-        # normalize the observations
-        observations = observations - observations.mean()
-        observations = observations / observations.std()
+        if self.smooth_energies:
+            # normalize the observations
+            observations = observations - observations.mean()
+            observations = observations / observations.std()
 
         # optimizer
         optimizer = tf.train.RMSPropOptimizer(lr)
@@ -91,8 +100,9 @@ class GradientDescent(object):
                 )
                 loss_vals.append(loss_val)
             # obtain final smoothed energies
-            energies_smooth = sess.run(self.x, feed_dict={self.y:observations})
+            belief = sess.run(self.x, feed_dict={self.y:observations})
 
-        belief = np.argmin(energies_smooth, axis=2)
+        if self.smooth_energies:
+            belief = np.argmin(belief, axis=2)
 
         return belief

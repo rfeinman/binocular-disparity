@@ -20,7 +20,10 @@ class MaxProductLBP(object):
     A Markov Random Field with methods to apply the sum-product Loopy Belief
     Propagation inference algorithm.
     """
-    def __init__(self, height, width, num_beliefs, damping=0.5, tol=1e-5):
+    def __init__(
+            self, height, width, num_beliefs, alpha=60., beta=1.5, damping=0.5,
+            tol=1e-5
+    ):
         # basic params
         self.width = width
         self.height = height
@@ -34,7 +37,7 @@ class MaxProductLBP(object):
         for a in range(num_beliefs):
             for b in range(num_beliefs):
                 unaries[a, b] = -unary_potential(a, b)
-                binaries[a, b] = -binary_potential(a, b)
+                binaries[a, b] = -binary_potential(a, b, alpha, beta)
         self.unaries = unaries
         self.binaries = binaries
 
@@ -70,7 +73,6 @@ class MaxProductLBP(object):
         all_incoming = np.zeros((n_vertices, n_states))
         for i in tqdm(range(iterations)):
             diff = 0
-            #results = [maxprod_iteration(e) for e in range(n_edges)]
             results = util.parallel(maxprod_iteration, range(n_edges))
             for e, (edge, result) in enumerate(zip(edges, results)):
                 a, b = edge
