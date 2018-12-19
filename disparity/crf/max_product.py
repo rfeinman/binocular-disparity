@@ -1,3 +1,4 @@
+from tqdm import tqdm
 import numpy as np
 
 from .. import util
@@ -67,7 +68,7 @@ class MaxProductLBP(object):
         n_vertices, n_states = unary_potentials.shape
         messages = np.zeros((n_edges, 2, n_states))
         all_incoming = np.zeros((n_vertices, n_states))
-        for i in range(iterations):
+        for i in tqdm(range(iterations)):
             diff = 0
             #results = [maxprod_iteration(e) for e in range(n_edges)]
             results = util.parallel(maxprod_iteration, range(n_edges))
