@@ -17,10 +17,11 @@ export PYTHONPATH="/path/to/binocular-disparity:$PYTHONPATH"
 
 ## Usage Example
 
-The following code loads the BPL model with pre-defined hyperparameters 
-and samples a token
+The following code demo shows how to compute disparity for a left-right
+image pair.
 
 ```python
+import numpy as np
 from disparity import cnn, crf, util
 
 # Create a function to load your left and right image.
@@ -35,11 +36,13 @@ energies = cnn.compute_energies(image_left, image_right, numDisparities=120)
 threshold = util.select_disparity_threshold(energies)
 energies = energies[:,:,:threshold]
 
-# Initialize MRF loopy belief propagation model
-smoother = crf.LoopyBP(height, width, num_beliefs=threshold)
+# Compute the initial disparity for each pixel by finding the disparity value
+# with minimum energy at that pixel
+disparity = np.argmin(energies, axis=2)
 
 # Perform MAP inference with loopy BP (max-product message passing)
-disparity = smoother.decode_MAP(energies, iterations=20)
+smoother = crf.MaxProductLBP(height, width, num_beliefs=threshold)
+disparity = smoother.decode_MAP(disparity, iterations=30)
 ```
 
 ## Benchmark dataset
