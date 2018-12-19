@@ -18,7 +18,14 @@ BASE = 4
 DIRECTIONS = {"right":RIGHT, "up":UP, "left":LEFT, "down":DOWN, "base":BASE}
 
 
-class SumProduct(object):
+def howsmooth(a, b, threshold=0.1):
+    s = np.exp(-np.square(a - b))
+    s = max(s, threshold)
+
+    return s
+
+
+class SumProductLBP(object):
     """
     A Markov Random Field with methods to apply the sum-product Loopy Belief
     Propagation inference algorithm.
@@ -269,10 +276,3 @@ class SumProduct(object):
         """Represent the MRF by it's data for now.
         """
         return repr(self.data)
-
-
-def howsmooth(a, b, threshold=0.1):
-    s = np.exp(-np.square(a - b))
-    s = max(s, threshold)
-
-    return s

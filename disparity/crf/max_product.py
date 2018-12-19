@@ -4,7 +4,17 @@ from .. import util
 
 
 
-class MaxProduct(object):
+def unary_potential(x, y):
+    return np.square(x - y)
+
+def binary_potential(a, b, alpha=60., beta=1.5):
+    d = np.square(a - b)
+    smooth = alpha * d / (d + beta)
+
+    return smooth
+
+
+class MaxProductLBP(object):
     """
     A Markov Random Field with methods to apply the sum-product Loopy Belief
     Propagation inference algorithm.
@@ -76,15 +86,6 @@ class MaxProduct(object):
         belief = belief.reshape(self.height, self.width)
 
         return belief
-
-def unary_potential(x, y):
-    return np.square(x - y)
-
-def binary_potential(a, b, alpha=60., beta=1.5):
-    d = np.square(a - b)
-    smooth = alpha * d / (d + beta)
-
-    return smooth
 
 def maxprod_iteration(e):
     a, b = edges[e]
