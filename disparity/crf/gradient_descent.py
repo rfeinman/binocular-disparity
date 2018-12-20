@@ -73,8 +73,10 @@ class GradientDescent(object):
         :param iterations: [int] number of optimization steps
         :return belief [(H,W) or (H,W,n) ndarray] the decoded latent variables
         """
-        # record
-        assert len(observations.shape) in [2,3]
+        if self.smooth_energies:
+            assert observations.shape == 3
+        else:
+            assert observations.shape == 2
         assert observations.shape[:2] == (self.height, self.width)
 
         if self.smooth_energies:
