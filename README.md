@@ -1,8 +1,6 @@
 # Computing Binocular Disparity with Convolutional Neural Networks and Conditional Random Fields
 
-This is a code repository for computing binocular disparity with a combination of Convolutional Neural Networks and Conditional Random Fields. The code makes use of TensorFlow backend. This project was assembled for Joan Bruna's 2018 course "Inference and Representation" at NYU. 
-
-NOTE: this repository has only been tested with Python3.
+This is a code repository for computing binocular disparity with a combination of Convolutional Neural Networks and Conditional Random Fields. The code makes use of TensorFlow backend. This project was assembled for Joan Bruna's 2018 course "Inference and Representation" at NYU. NOTE: this repository has only been tested with Python3.
 
 ![Model diagram](model_diagram.png)
 
