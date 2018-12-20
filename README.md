@@ -4,6 +4,8 @@ This is a code repository for computing binocular disparity with a combination o
 
 NOTE: this repository has only been tested with Python3.
 
+![Model diagram](model_diagram.pdf)
+
 ## Requirements & Setup
 
 Make sure that all requirements are installed on your machine before you run the code. A full list of requirements can be found in `requirements.txt`. To install the software, run the following command to clone the repository into a folder of your choice:
