@@ -4,7 +4,7 @@ This is a code repository for computing binocular disparity with a combination o
 
 NOTE: this repository has only been tested with Python3.
 
-![Model diagram](model_diagram.pdf)
+![Model diagram](model_diagram.png)
 
 ## Requirements & Setup
 
