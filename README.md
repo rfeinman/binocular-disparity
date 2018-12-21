@@ -2,7 +2,7 @@
 
 This is a code repository for computing binocular disparity with a combination of Convolutional Neural Networks and Conditional Random Fields. The disparity model requires **zero labeled training examples**. A pre-trained ImageNet CNN is used for feature extraction. This project was assembled for Joan Bruna's 2018 NYU course "Inference and Representation." NOTE: the repository has only been tested with Python3.
 
-![Model diagram](model_diagram.png)
+![Model diagram](documents/model_diagram.png)
 
 ## Requirements & Setup
 
@@ -55,16 +55,8 @@ download the link file at the following link:
 Then, unzip the folder and place it inside `data/`.
 
 
-## Repository Structure
+### Results
 
-#### 1. data
-Here is a folder to hold all datasets for the experiments
+Below is a figure showing results of our model on some of the Middlebury dataset samples.
 
-#### 2. disparity
-Here are the core source code modules of the repository
-
-#### 3. scripts
-Here are some python scripts for running our experiments
-
-#### 4. notebooks
-Here are some Jupyter notebooks for experiments
+![Middlebury results](documents/results.png)
