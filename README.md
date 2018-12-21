@@ -4,6 +4,8 @@ This is a code repository for computing binocular disparity with a combination o
 
 ![Model diagram](documents/model_diagram.png)
 
+<img src="documents/model_diagram.png" width="200" height="200">
+
 ## Requirements & Setup
 
 Make sure that all requirements are installed on your machine before you run the code. A full list of requirements can be found in `requirements.txt`. To install the software, run the following command to clone the repository into a folder of your choice:
