@@ -48,7 +48,7 @@ disparity = smoother.decode_MAP(disparity, iterations=30)
 ## Benchmark dataset
 
 Our experiment scripts use the Middlebury stereo dataset. To obtain the dataset,
-download the link file at the following link:
+download the zip file at the following link:
 
 <http://www.cns.nyu.edu/~reuben/files/middlebury.zip>.
 
