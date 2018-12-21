@@ -54,9 +54,14 @@ download the link file at the following link:
 
 Then, unzip the folder and place it inside `data/`.
 
+### Script
+
+To run the model on the whole Middlebury dataset, use the experiment script
+`scripts/middlebury_experiment.py`. You can select which CRF inference algorithm
+to use with the `--crf_alg` parameter (options are gradient descent, max-product
+loopyBP, sum-product loopyBP).
+
 
 ### Results
-
-Below is a figure showing results of our model on some of the Middlebury dataset samples.
 
 <img src="documents/results.png" width="700" height="992">
