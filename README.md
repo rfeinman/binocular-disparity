@@ -59,4 +59,4 @@ Then, unzip the folder and place it inside `data/`.
 
 Below is a figure showing results of our model on some of the Middlebury dataset samples.
 
-![Middlebury results](documents/results.png)
+<img src="documents/results.png" width="700" height="992">
