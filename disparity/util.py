@@ -113,19 +113,6 @@ def energy_entropy(energies):
 
     return entropy
 
-# def energy_entropy(energies):
-#     h, w, n = energies.shape
-#     # -> (h*w,n)
-#     energies = energies.reshape(h*w, n)
-#     # -> (n,h*w)
-#     energies = np.transpose(energies)
-#     energies = energies.max(axis=0) - energies
-#     probs = softmax(energies, axis=0)
-#     entropy = stats.entropy(probs)
-#     entropy = entropy.reshape(h, w) / stats.entropy(np.ones(n))
-#
-#     return entropy
-
 def get_percentile(thresh):
     entropy = energy_entropy(eng[:,:,:thresh])
     p = np.percentile(entropy.flatten(), 75)
@@ -139,7 +126,6 @@ def select_disparity_threshold(energies, min_thresh=10, alpha=0.05):
     eng = energies
     candidates = np.arange(min_thresh, energies.shape[2])
     percentiles = parallel(get_percentile, candidates)
-    #thresh = candidates[np.argmin(percentiles)]
     p_min, p_max = np.min(percentiles), np.max(percentiles)
     cap = p_min + alpha*(p_max-p_min)
     ix = np.where(percentiles <= cap)[0]
